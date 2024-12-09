@@ -17,8 +17,6 @@ pyglm==0.4.8b1
 seaborn
 ```
 
-Sure! Here's a more natural and concise version of the README file for your script:
-
 ---
 
 # Gripper Experimentation Framework
@@ -89,7 +87,6 @@ For more details, feel free to dive into the code!
 
 --- 
 
-Let me know if you need further adjustments!
 
 Code to generate all the plots, as well as the Classifier:
 ```
