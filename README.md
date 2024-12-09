@@ -16,80 +16,134 @@ pandas >=1.1.4
 pyglm==0.4.8b1
 seaborn
 ```
+---
+
+# 🤖 Gripper Experimentation Framework
+
+A robust simulation and analysis framework for robotic gripper experiments, using PyBullet and machine learning, designed to evaluate and improve grasping and lifting capabilities.
 
 ---
 
-# Gripper Experimentation Framework
+## 🚀 Features at a Glance
 
-This script simulates a series of gripper experiments using PyBullet, designed to test the grasping and lifting capabilities of different gripper models.
+- 🛠 **Simulate Grippers**: Test a variety of grippers with randomized initial poses.
+- 🧠 **Train Classifiers**: Use SVMs and Feedforward Neural Networks to predict grasp success.
+- 📊 **Data Visualization**: Analyze 3D orientations and grasp success patterns.
+- 📈 **Batch Processing**: Efficient parallel simulations for rapid data generation.
+- 🧩 **Modular Design**: Easily extendable with new grippers or objects.
 
-## Classes Overview
+---
 
-### `Gripper` (Abstract Base Class)
-The `Gripper` class is the base for all gripper types. It defines the necessary methods for gripper operations:
-- `grasp(target)`: Grasp the target object.
-- `preshape()`: Prepares the gripper for grasping.
-- `openGripper(position)`: Opens the gripper to a specified position.
-- `getJointPosition()`: Returns the current joint positions of the gripper.
-- `experiment_setup()`: Initializes the gripper in the 3D space.
-- `lifting()`: Lifts the gripper after a successful grasp.
+## 🏗 Framework Overview
 
-### `three_finger_gripper`
-This class extends `Gripper` and implements the grasping mechanisms for a three-finger gripper. It includes:
-- Grasp, preshape, and lift operations.
-- A method for opening the gripper.
-- Setup and joint position management.
-- Visualizing the 3D space with debug lines.
+### OOP Architecture 🧩
 
-### `experiment`
-This class handles individual experiments, where a gripper performs a grasping and lifting task on an object. It includes:
-- Spawning the object in the simulation.
-- Checking whether the grasp was successful by comparing the object’s position before and after lifting.
+- **Abstract Base Class**: Shared gripper methods like `grasp()` and `preshape()`.
+- **Inheritance**: Specialized grippers like `ThreeFingerGripper`.
+- **Polymorphism**: Unified interface for gripper implementations.
+- **Composition & Aggregation**: Integration of grippers and experiments for modularity.
 
-### `BatchExperiment`
-This class runs multiple `experiment` objects simultaneously. It supports:
-- Initializing multiple experiments within a grid.
-- Running the grasping operations for all experiments.
-- Saving results to CSV files.
+### Simulation Workflow 🌀
 
-## Features
-- Simulate various gripper types (currently supports a 3-finger gripper).
-- Test object grasping and lifting success in 3D space.
-- Automatically generate random positions and orientations for experiments.
-- Save results to CSV for analysis.
+1. **Initialize Environment**: Map objects and grippers to URDF files.
+2. **Randomize Parameters**: Generate varied initial poses.
+3. **Run Experiments**: Perform grasps, evaluate success, and record results.
+4. **Analyze Results**: Train ML models and visualize performance.
 
-## Usage
+---
 
-1. **Setting Up the Experiment**  
-   Initialize the `BatchExperiment` class with parameters like the batch number, number of experiments, and gripper name. The class will handle the creation of the experiment environment and manage the PyBullet connection.
+## 🧪 Experiments
 
-2. **Experiment Execution**  
-   After setting up the experiment space, you can trigger the `batchGraspingOperation()` method to run multiple experiments and collect the results.
+### Data Generation 📂
 
-3. **Results**  
-   Results are saved in a CSV file, with each row representing a gripper position and its grasp success (1 for success, 0 for failure).
+- **Randomized Poses**: Use normal and uniform distributions for gripper positions and orientations.
+- **Balanced Dataset**: Oversample minority class for equal success/failure representation.
+- **Feature Extraction**: Key parameters include 3D positions and Euler angles.
 
-## Requirements
-- PyBullet (`pip install pybullet`)
-- Numpy (`pip install numpy`)
-- Matplotlib (`pip install matplotlib`)
+### Visualizations 📊
 
-## File Structure
-- `Robots/grippers/threeFingers/sdh.urdf`: 3-finger gripper model.
-- `share/cube_small.urdf`: Object models for the experiments (e.g., small cube).
-- `utils/thing.py`: Contains utility functions for the experiment (e.g., `Thing` class).
+- **3D Point Clouds**: Analyze success clusters with arrows showing orientations.
+- **Feature Distributions**: Kernel density plots for feature importance.
+- **t-SNE**: Dimensionality reduction for feature clustering.
 
-## Notes
-- This framework assumes you are running PyBullet in either GUI or shared memory mode.
-- You can extend it with additional gripper and object models.
-  
-For more details, feel free to dive into the code!
+---
 
---- 
+## 🧠 Classifiers
 
+### 1️⃣ Feedforward Neural Network
 
-Code to generate all the plots, as well as the Classifier:
+- **Architecture**:
+  - Input: 6 features (position + orientation).
+  - Hidden Layers: Two fully connected layers (64 and 32 units).
+  - Output: Binary classification with sigmoid activation.
+- **Training**:
+  - Optimizer: Adam.
+  - Loss: Binary Cross-Entropy.
+  - Validation Accuracy: Peaks at ~89% for rectangular objects.
+
+### 2️⃣ Support Vector Machine
+
+- **Parameter Tuning**:
+  - Kernels: RBF and Linear.
+  - Regularization (C): Tested values of 0.1, 1.0, and 10.0.
+- **Results**:
+  - Best Kernel: RBF with C=10.0.
+  - Accuracy: Up to 88% for cube and rectangle datasets.
+
+### Data Split Experiments 📈
+
+- Varying train-validation ratios showed logarithmic accuracy improvements.
+- SVM outperformed FNN for smaller datasets, achieving 80% accuracy with just 10% of the data.
+
+---
+
+## 📋 Requirements
+
+Install dependencies with:
+
+```bash
+pip install pybullet numpy matplotlib torch scikit-learn
 ```
-OOP_data_folder/all_the_stuff.ipynb
-```
 
+---
+
+## 📂 File Structure
+
+- **Grippers**: `Robots/grippers/threeFingers/sdh.urdf`.
+- **Objects**: `share/cube_small.urdf`.
+- **Utilities**: `utils/thing.py`.
+
+---
+
+## 🔍 Results and Insights
+
+- **Success Rates**:
+  - Cubes: Position dominates success.
+  - Rectangles: Orientation plays a critical role.
+- **Classifier Metrics**:
+  - FNN: F1-Score ~0.89 for rectangles.
+  - SVM: Superior for limited data, accuracy ~88%.
+- **Visualization**:
+  - Success clusters near object centers; failures at edges.
+
+---
+
+## 🎯 Limitations
+
+- Simulations lack irregular objects (e.g., mugs, trophies).
+- Scaling issues for >100 simultaneous grippers.
+- Basic FNN architecture limits generalization.
+
+---
+
+## 🎉 Achievements
+
+- Generalized framework for multiple grippers and objects.
+- Efficient batch processing for rapid data generation.
+- Strong ML performance with meaningful insights into grasp dynamics.
+
+---
+
+[GitHub repository](https://github.com/PaytonLiao/OOP_project.git). 🚀
+
+---
