@@ -17,6 +17,9 @@ pyglm==0.4.8b1
 seaborn
 ```
 
+Run gripperTest.py to produce the data for the classifier. Data generated are produced in the OOP_data_folder automatically, so it is available for the classifier.
+In gripperTest.py, the gripper, object, the number of batches and the number of experiments can be set in the main function. 
+
 Code to generate all the plots, as well as the Classifier:
 ```
 OOP_data_folder/all_the_stuff.ipynb
