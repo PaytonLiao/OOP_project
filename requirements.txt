@@ -11,3 +11,4 @@ pytest >= 6.1.2
 pyyaml >=5.3.1
 pandas >=1.1.4
 pyglm==0.4.8b1
+seaborn
