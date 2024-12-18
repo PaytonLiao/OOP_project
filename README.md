@@ -43,7 +43,7 @@ A robust simulation and analysis framework for robotic gripper experiments, usin
 - **Polymorphism**: Unified interface for gripper implementations.
 - **Composition & Aggregation**: Integration of grippers and experiments for modularity.
 
-### Simulation Workflow 🌀
+### Simulation Workflow (Run the main.py script) 🌀
 
 1. **Initialize Environment**: Map objects and grippers to URDF files.
 2. **Randomize Parameters**: Generate varied initial poses.
